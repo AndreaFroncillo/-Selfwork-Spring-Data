@@ -29,7 +29,6 @@ class BlogApplicationTests {
 
     @Test
     void testAuthorDerivedQueries() {
-
         Author author = new Author();
         author.setName("Andrea");
         author.setSurname("Froncillo");
@@ -47,7 +46,6 @@ class BlogApplicationTests {
 
     @Test
     void testPostDerivedQueries() {
-
         Author author = new Author();
         author.setName("Mario");
         author.setSurname("Rossi");
@@ -72,7 +70,6 @@ class BlogApplicationTests {
 
     @Test
     void testCommentDerivedQueries() {
-
         Author author = new Author();
         author.setName("Luca");
         author.setSurname("Verdi");
@@ -101,8 +98,23 @@ class BlogApplicationTests {
     }
 
     @Test
-    void testNativeQueryPosts() {
+    void testAuthorNativeQuery() {
+        Author author = new Author();
+        author.setName("Paolo");
+        author.setSurname("Neri");
+        author.setEmail("paolo@test.com");
 
+        authorRepository.save(author);
+
+        List<Author> authors =
+                authorRepository.findAuthorsBySurnameNative("Neri");
+
+        assertFalse(authors.isEmpty());
+        assertEquals("Paolo", authors.get(0).getName());
+    }
+
+    @Test
+    void testPostNativeQueries() {
         Author author = new Author();
         author.setName("Sara");
         author.setSurname("Bianchi");
@@ -117,8 +129,41 @@ class BlogApplicationTests {
 
         postRepository.save(post);
 
-        List<Post> posts = postRepository.findAllPostsNative();
+        List<Post> allPosts = postRepository.findAllPostsNative();
+        List<Post> postsByTitle = postRepository.findPostsByTitleNative("Native");
 
-        assertFalse(posts.isEmpty());
+        assertFalse(allPosts.isEmpty());
+        assertFalse(postsByTitle.isEmpty());
+        assertEquals("Query Native", postsByTitle.get(0).getTitle());
+    }
+
+    @Test
+    void testCommentNativeQuery() {
+        Author author = new Author();
+        author.setName("Francesca");
+        author.setSurname("Blu");
+        author.setEmail("francesca@test.com");
+
+        authorRepository.save(author);
+
+        Post post = new Post();
+        post.setTitle("Commenti Spring");
+        post.setBody("Test commenti");
+        post.setAuthor(author);
+
+        postRepository.save(post);
+
+        Comment comment = new Comment();
+        comment.setUsername("Marco");
+        comment.setBody("Commento di prova");
+        comment.setPost(post);
+
+        commentRepository.save(comment);
+
+        List<Comment> comments =
+                commentRepository.findCommentsByUsernameNative("Marco");
+
+        assertFalse(comments.isEmpty());
+        assertEquals("Marco", comments.get(0).getUsername());
     }
 }
