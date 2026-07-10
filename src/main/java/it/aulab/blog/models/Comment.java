@@ -1,5 +1,7 @@
 package it.aulab.blog.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -17,6 +19,7 @@ public class Comment {
 
     @ManyToOne
     @JoinColumn(name = "post_id")
+    @JsonIgnoreProperties("comments")
     private Post post;
 
     public Comment() {}

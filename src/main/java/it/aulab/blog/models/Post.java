@@ -1,7 +1,10 @@
 package it.aulab.blog.models;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.*;
 
@@ -20,12 +23,15 @@ public class Post {
 
     @ManyToOne
     @JoinColumn(name = "author_id")
+    @JsonIgnoreProperties("posts")
     private Author author;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties("post")
     private List<Comment> comments = new ArrayList<Comment>();
 
-    public Post() {}
+    public Post() {
+    }
 
     public Long getId() {
         return id;
