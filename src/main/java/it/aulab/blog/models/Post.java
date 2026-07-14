@@ -1,6 +1,5 @@
 package it.aulab.blog.models;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -1,112 +1,87 @@
 package it.aulab.blog.controllers;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import it.aulab.blog.models.Comment;
-import it.aulab.blog.models.Post;
-import it.aulab.blog.repositories.CommentRepository;
-import it.aulab.blog.repositories.PostRepository;
+import it.aulab.blog.dtos.CommentDto;
+import it.aulab.blog.services.CommentService;
+import it.aulab.blog.services.PostService;
 
-@RestController
+@Controller
 @RequestMapping("/comments")
 public class CommentController {
 
     @Autowired
-    private CommentRepository commentRepository;
+    private CommentService commentService;
 
     @Autowired
-    private PostRepository postRepository;
+    private PostService postService;
 
     @GetMapping
-    public List<Comment> getAllComments() {
-        return commentRepository.findAll();
+    public String index(Model model) {
+        model.addAttribute("title", "Commenti");
+        model.addAttribute("comments", commentService.readAll());
+
+        return "comments/index";
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Comment> getCommentById(@PathVariable Long id) {
+    public String show(
+            @PathVariable Long id,
+            Model model
+    ) {
+        model.addAttribute("title", "Dettaglio commento");
+        model.addAttribute("comment", commentService.read(id));
 
-        return commentRepository.findById(id)
-                .map(comment -> ResponseEntity.ok(comment))
-                .orElse(ResponseEntity.notFound().build());
+        return "comments/show";
+    }
+
+    @GetMapping("/create")
+    public String createView(Model model) {
+        model.addAttribute("title", "Nuovo commento");
+        model.addAttribute("comment", new CommentDto());
+        model.addAttribute("posts", postService.readAll());
+
+        return "comments/create";
     }
 
     @PostMapping
-    public ResponseEntity<?> createComment(@RequestBody Comment comment) {
+    public String create(
+            @ModelAttribute("comment") CommentDto commentDto
+    ) {
+        commentService.create(commentDto);
 
-        if (comment.getPost() == null || comment.getPost().getId() == null) {
-            return ResponseEntity
-                    .badRequest()
-                    .body("È necessario specificare un post.");
-        }
-
-        Post post = postRepository.findById(comment.getPost().getId()).orElse(null);
-
-        if (post == null) {
-            return ResponseEntity
-                    .badRequest()
-                    .body("Post non trovato.");
-        }
-
-        comment.setPost(post);
-
-        Comment savedComment = commentRepository.save(comment);
-
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(savedComment);
+        return "redirect:/comments";
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<?> updateComment(@PathVariable Long id, @RequestBody Comment commentDetails) {
+    @GetMapping("/{id}/edit")
+    public String editView(
+            @PathVariable Long id,
+            Model model
+    ) {
+        model.addAttribute("title", "Modifica commento");
+        model.addAttribute("comment", commentService.read(id));
+        model.addAttribute("posts", postService.readAll());
 
-        Comment comment = commentRepository.findById(id).orElse(null);
-
-        if (comment == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        if (commentDetails.getUsername() != null) {
-            comment.setUsername(commentDetails.getUsername());
-        }
-
-        if (commentDetails.getBody() != null) {
-            comment.setBody(commentDetails.getBody());
-        }
-
-        if (commentDetails.getPost() != null && commentDetails.getPost().getId() != null) {
-
-            Post post = postRepository.findById(commentDetails.getPost().getId()).orElse(null);
-
-            if (post == null) {
-                return ResponseEntity
-                        .badRequest()
-                        .body("Post non trovato.");
-            }
-
-            comment.setPost(post);
-        }
-
-        Comment updatedComment = commentRepository.save(comment);
-
-        return ResponseEntity.ok(updatedComment);
+        return "comments/edit";
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteComment(@PathVariable Long id) {
+    @PostMapping("/{id}")
+    public String update(
+            @PathVariable Long id,
+            @ModelAttribute("comment") CommentDto commentDto
+    ) {
+        commentService.update(id, commentDto);
 
-        Comment comment = commentRepository.findById(id).orElse(null);
+        return "redirect:/comments/" + id;
+    }
 
-        if (comment == null) {
-            return ResponseEntity.notFound().build();
-        }
+    @PostMapping("/{id}/delete")
+    public String delete(@PathVariable Long id) {
+        commentService.delete(id);
 
-        commentRepository.delete(comment);
-
-        return ResponseEntity.noContent().build();
+        return "redirect:/comments";
     }
 }

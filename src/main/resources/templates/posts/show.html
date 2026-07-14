@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title th:text="${title}">Dettaglio post</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <div class="container py-5">
+
+        <h1 class="mb-4">Dettaglio post</h1>
+
+        <div class="card">
+
+            <div class="card-body">
+
+                <h2 class="card-title" th:text="${post.title}">
+                </h2>
+
+                <p class="text-muted">
+                    Autore:
+                    <span th:text="${post.authorFullname}"></span>
+                </p>
+
+                <p class="card-text" th:text="${post.body}">
+                </p>
+
+                <p>
+                    <strong>Numero commenti:</strong>
+                    <span th:text="${post.numberOfComments}"></span>
+                </p>
+
+                <a th:href="@{/posts/{id}/edit(id=${post.id})}" class="btn btn-warning">
+                    Modifica
+                </a>
+
+                <a th:href="@{/posts}" class="btn btn-secondary">
+                    Torna ai post
+                </a>
+
+                <a th:href="@{/comments}" class="btn btn-outline-warning">
+                    Vai ai commenti
+                </a>
+
+                <a th:href="@{/authors}" class="btn btn-outline-primary">
+                    Vai agli autori
+                </a>
+
+                <a th:href="@{/}" class="btn btn-outline-secondary">
+                    Home
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

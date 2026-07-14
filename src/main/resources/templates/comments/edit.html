@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title th:text="${title}">Modifica commento</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <div class="container py-5">
+
+        <h1 class="mb-4">Modifica commento</h1>
+
+        <form th:action="@{/comments/{id}(id=${comment.id})}" th:object="${comment}" method="post">
+
+            <div class="mb-3">
+                <label for="username" class="form-label">
+                    Username
+                </label>
+
+                <input id="username" type="text" class="form-control" th:field="*{username}" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="body" class="form-label">
+                    Contenuto
+                </label>
+
+                <textarea id="body" class="form-control" th:field="*{body}" rows="5" required>
+            </textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="postId" class="form-label">
+                    Post
+                </label>
+
+                <select id="postId" class="form-select" th:field="*{postId}" required>
+
+                    <option th:each="post : ${posts}" th:value="${post.id}" th:text="${post.title}">
+                    </option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+                Aggiorna
+            </button>
+
+            <a th:href="@{/comments/{id}(id=${comment.id})}" class="btn btn-secondary">
+                Annulla
+            </a>
+
+            <a th:href="@{/comments}" class="btn btn-outline-warning">
+                Elenco commenti
+            </a>
+
+            <a th:href="@{/}" class="btn btn-outline-secondary">
+                Home
+            </a>
+
+        </form>
+
+    </div>
+
+</body>
+
+</html>

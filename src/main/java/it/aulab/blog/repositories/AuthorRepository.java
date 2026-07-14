@@ -18,8 +18,15 @@ public interface AuthorRepository extends JpaRepository<Author, Long> {
 
     List<Author> findBySurname(String surname);
 
+    List<Author> findByNameAndSurname(String name, String surname);
+
     Author findByEmail(String email);
 
-    @Query(value = "SELECT * FROM authors WHERE surname = :surname", nativeQuery = true)
-    List<Author> findAuthorsBySurnameNative(@Param("surname") String surname);
+    @Query(
+        value = "SELECT * FROM authors WHERE surname = :surname",
+        nativeQuery = true
+    )
+    List<Author> findAuthorsBySurnameNative(
+        @Param("surname") String surname
+    );
 }
