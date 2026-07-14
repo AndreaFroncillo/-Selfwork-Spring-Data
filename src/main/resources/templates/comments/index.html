@@ -37,6 +37,13 @@
                 <a th:href="@{/comments/create}" class="btn btn-primary">
                     Nuovo commento
                 </a>
+
+                <form th:action="@{/logout}" method="post" class="d-inline">
+
+                    <button type="submit" class="btn btn-danger">
+                        Logout
+                    </button>
+                </form>
             </div>
         </div>
 

@@ -37,6 +37,13 @@
                 <a th:href="@{/authors/create}" class="btn btn-primary">
                     Nuovo autore
                 </a>
+
+                <form th:action="@{/logout}" method="post" class="d-inline">
+
+                    <button type="submit" class="btn btn-danger">
+                        Logout
+                    </button>
+                </form>
             </div>
         </div>
 
